@@ -24,6 +24,8 @@ github.com/mikefaraponov/chatum v0.0.0-20181030114208-443fa57cba5b h1:mRkW3mqvkv
 github.com/mikefaraponov/chatum v0.0.0-20181030114208-443fa57cba5b/go.mod h1:5gQ0O8fbZrmAiCgsHkuVNQ+KN4zHQMfSk67pNhyoy1U=
 github.com/mikefaraponov/chatum v0.0.0-20181030205637-70cf16852d6d h1:sbq2KfJpWW9KmK964KSKLNV3kFaLUkbguUa57u9cEew=
 github.com/mikefaraponov/chatum v0.0.0-20181030205637-70cf16852d6d/go.mod h1:5gQ0O8fbZrmAiCgsHkuVNQ+KN4zHQMfSk67pNhyoy1U=
+github.com/mikefaraponov/chatum v0.0.0-20181030221827-0954efcfe698 h1:rzoVN1SFeImmrX8SeujfZaTgZJQ8Wwa5kMjQHAkBMAk=
+github.com/mikefaraponov/chatum v0.0.0-20181030221827-0954efcfe698/go.mod h1:5gQ0O8fbZrmAiCgsHkuVNQ+KN4zHQMfSk67pNhyoy1U=
 github.com/mitchellh/go-wordwrap v1.0.0 h1:6GlHJ/LTGMrIJbwgdqdl2eEH8o+Exx/0m8ir9Gns0u4=
 github.com/mitchellh/go-wordwrap v1.0.0/go.mod h1:ZXFpozHsX6DPmq2I0TCekCxypsnAUbP2oI0UX1GXzOo=
 go.uber.org/atomic v1.3.2 h1:2Oa65PReHzfn29GpvgsYwloV9AVFHPDk8tYxt2c2tr4=

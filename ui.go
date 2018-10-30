@@ -54,18 +54,26 @@ func NewUI(user User, client chatum.Chatum_CommunicateClient) (tui.UI, error) {
 				history.Append(tui.NewHBox(
 					tui.NewLabel(time.Now().Format(TimeFormat)),
 					tui.NewPadder(1, 0, tui.NewLabel("$error$")),
-					tui.NewLabel("Failed to receive message"),
+					tui.NewLabel("Failed to receive. Restart application and make sure your url is correct"),
 					tui.NewSpacer(),
 				))
-			} else {
+				ui.Update(func() {})
+				return
+			}
+			switch msg.GetType() {
+			case chatum.EventType_DEFAULT:
 				history.Append(tui.NewHBox(
 					tui.NewLabel(time.Now().Format(TimeFormat)),
 					tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf("<%s>", msg.GetUsername()))),
 					tui.NewLabel(msg.GetMessage()),
 					tui.NewSpacer(),
 				))
+				ui.Update(func() {})
+			case chatum.EventType_PING:
+				client.Send(&chatum.ClientSideEvent{
+					Type: chatum.EventType_PONG,
+				})
 			}
-			ui.Update(func() {})
 		}
 	}()
 	return ui, err

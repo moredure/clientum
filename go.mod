@@ -6,7 +6,7 @@ require (
 	github.com/lucasb-eyer/go-colorful v0.0.0-20181028223441-12d3b2882a08 // indirect
 	github.com/marcusolsson/tui-go v0.3.1-0.20180616142530-cd94d703fac1
 	github.com/mattn/go-runewidth v0.0.3 // indirect
-	github.com/mikefaraponov/chatum v0.0.0-20181030205637-70cf16852d6d
+	github.com/mikefaraponov/chatum v0.0.0-20181030221827-0954efcfe698
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	go.uber.org/atomic v1.3.2 // indirect
 	go.uber.org/dig v1.5.0 // indirect
