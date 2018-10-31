@@ -7,8 +7,6 @@ import (
 	"time"
 )
 
-const TimeFormat = "15:04:05"
-
 func NewUI(user User, client chatum.Chatum_CommunicateClient) (tui.UI, error) {
 	history := tui.NewVBox()
 	historyScroll := tui.NewScrollArea(history)
@@ -24,55 +22,44 @@ func NewUI(user User, client chatum.Chatum_CommunicateClient) (tui.UI, error) {
 	chat := tui.NewVBox(historyBox, inputBox)
 	chat.SetSizePolicy(tui.Expanding, tui.Expanding)
 	input.OnSubmit(func(e *tui.Entry) {
-		txt := e.Text()
-		msg := &chatum.ClientSideEvent{
-			Message: txt,
-		}
-		if err := client.Send(msg); err != nil {
+		if err := client.Send(NewMessage(e.Text())); err != nil {
 			history.Append(tui.NewHBox(
 				tui.NewLabel(time.Now().Format(TimeFormat)),
-				tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf("<%s>", string(user)))),
-				tui.NewLabel("Message not delivered!"),
-				tui.NewSpacer(),
-			))
-		} else {
-			history.Append(tui.NewHBox(
-				tui.NewLabel(time.Now().Format(TimeFormat)),
-				tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf("<%s>", string(user)))),
-				tui.NewLabel(txt),
+				tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf(UserLabelTemplate, string(user)))),
+				tui.NewLabel(MessageNotDeliveredPrompt),
 				tui.NewSpacer(),
 			))
 		}
-		input.SetText("")
+		history.Append(tui.NewHBox(
+			tui.NewLabel(time.Now().Format(TimeFormat)),
+			tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf(UserLabelTemplate, string(user)))),
+			tui.NewLabel(e.Text()),
+			tui.NewSpacer(),
+		))
+		input.SetText(CleanInput)
 	})
-	root := tui.NewHBox(chat)
-	ui, err := tui.New(root)
+	ui, err := tui.New(tui.NewHBox(chat))
 	go func() {
 		for {
-			msg, err := client.Recv()
-			if err != nil {
+			if msg, err := client.Recv(); err != nil {
 				history.Append(tui.NewHBox(
 					tui.NewLabel(time.Now().Format(TimeFormat)),
-					tui.NewPadder(1, 0, tui.NewLabel("$error$")),
-					tui.NewLabel("Failed to receive. Restart application and make sure your url is correct"),
+					tui.NewPadder(1, 0, tui.NewLabel(ErrorLabel)),
+					tui.NewLabel(PleaseRestartPrompt),
 					tui.NewSpacer(),
 				))
-				ui.Update(func() {})
+				ui.Update(DoNothing)
 				return
-			}
-			switch msg.GetType() {
-			case chatum.EventType_DEFAULT:
+			} else if msg.GetType() == chatum.EventType_DEFAULT {
 				history.Append(tui.NewHBox(
 					tui.NewLabel(time.Now().Format(TimeFormat)),
-					tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf("<%s>", msg.GetUsername()))),
+					tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf(UserLabelTemplate, msg.GetUsername()))),
 					tui.NewLabel(msg.GetMessage()),
 					tui.NewSpacer(),
 				))
-				ui.Update(func() {})
-			case chatum.EventType_PING:
-				client.Send(&chatum.ClientSideEvent{
-					Type: chatum.EventType_PONG,
-				})
+				ui.Update(DoNothing)
+			} else if msg.GetType() == chatum.EventType_PING {
+				client.Send(NewPongMessage())
 			}
 		}
 	}()

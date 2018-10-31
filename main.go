@@ -15,6 +15,6 @@ func main() {
 		fx.Provide(NewGRPCDial),
 		fx.Provide(NewChatumCommunicateClient),
 		fx.Provide(NewUI),
-		fx.Invoke(Register),
+		fx.Invoke(Bootstrap),
 	).Run()
 }
