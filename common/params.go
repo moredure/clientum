@@ -5,7 +5,10 @@ import (
 	"os"
 )
 
-type ServerAddress string
+type (
+	ServerAddress string
+	User string
+)
 
 func NewServerAddress() fx.Option {
 	url, ok := os.LookupEnv("SERVER_URL")
@@ -16,8 +19,6 @@ func NewServerAddress() fx.Option {
 		return ServerAddress(url)
 	})
 }
-
-type User string
 
 func NewUser() fx.Option {
 	user, ok := os.LookupEnv("USER")
