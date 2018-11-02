@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"context"
@@ -6,10 +6,11 @@ import (
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"syscall"
+	"github.com/mikefaraponov/clientum/common"
 )
 
 func Bootstrap(lc fx.Lifecycle, conn *grpc.ClientConn, ui tui.UI) {
-	ui.SetKeybinding(Esc, func() {
+	ui.SetKeybinding(common.Esc, func() {
 		syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 	})
 

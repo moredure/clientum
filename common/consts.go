@@ -1,4 +1,4 @@
-package main
+package common
 
 const (
 	TimeFormat                = "15:04:05"
