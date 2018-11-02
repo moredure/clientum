@@ -46,20 +46,14 @@ func (ui *terminalUI) addChat() *terminalUI {
 
 func (ui *terminalUI) onSubmit(e *tui.Entry) {
 	if err := ui.Send(NewMessage(e.Text())); err != nil {
-		ui.history.Append(tui.NewHBox(
-			tui.NewLabel(time.Now().Format(TimeFormat)),
-			tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf(UserLabelTemplate, string(ui.User)))),
-			tui.NewLabel(MessageNotDeliveredPrompt),
-			tui.NewSpacer(),
-		))
+		ui.appendToHistory(MessageNotDeliveredPrompt)
 	}
-	ui.history.Append(tui.NewHBox(
-		tui.NewLabel(time.Now().Format(TimeFormat)),
-		tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf(UserLabelTemplate, string(ui.User)))),
-		tui.NewLabel(e.Text()),
-		tui.NewSpacer(),
-	))
+	ui.appendToHistory(e.Text())
 	ui.input.SetText(CleanInput)
+}
+
+func (ui *terminalUI) getUserLabel() *tui.Label {
+	return tui.NewLabel(fmt.Sprintf(UserLabelTemplate, string(ui.User)))
 }
 
 func (ui *terminalUI) buildUI() (terminal tui.UI, err error) {
@@ -75,26 +69,43 @@ func (ui *terminalUI) buildUI() (terminal tui.UI, err error) {
 func (ui *terminalUI) onNewMessage() {
 	for {
 		if msg, err := ui.Recv(); err != nil {
-			ui.history.Append(tui.NewHBox(
-				tui.NewLabel(time.Now().Format(TimeFormat)),
-				tui.NewPadder(1, 0, tui.NewLabel(ErrorLabel)),
-				tui.NewLabel(PleaseRestartPrompt),
-				tui.NewSpacer(),
-			))
+			ui.appendNetworkError()
 			ui.Update(DoNothing)
 			return
 		} else if msg.GetType() == chatum.EventType_DEFAULT {
-			ui.history.Append(tui.NewHBox(
-				tui.NewLabel(time.Now().Format(TimeFormat)),
-				tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf(UserLabelTemplate, msg.GetUsername()))),
-				tui.NewLabel(msg.GetMessage()),
-				tui.NewSpacer(),
-			))
+			ui.appendNewMessage(msg)
 			ui.Update(DoNothing)
 		} else if msg.GetType() == chatum.EventType_PING {
 			ui.Send(NewPongMessage())
 		}
 	}
+}
+
+func (ui *terminalUI) appendToHistory(msg string) {
+	ui.history.Append(tui.NewHBox(
+		tui.NewLabel(time.Now().Format(TimeFormat)),
+		tui.NewPadder(1, 0, ui.getUserLabel()),
+		tui.NewLabel(msg),
+		tui.NewSpacer(),
+	))
+}
+
+func (ui *terminalUI) appendNewMessage(msg *chatum.ServerSideEvent) {
+	ui.history.Append(tui.NewHBox(
+		tui.NewLabel(time.Now().Format(TimeFormat)),
+		tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf(UserLabelTemplate, msg.GetUsername()))),
+		tui.NewLabel(msg.GetMessage()),
+		tui.NewSpacer(),
+	))
+}
+
+func (ui *terminalUI) appendNetworkError() {
+	ui.history.Append(tui.NewHBox(
+		tui.NewLabel(time.Now().Format(TimeFormat)),
+		tui.NewPadder(1, 0, tui.NewLabel(ErrorLabel)),
+		tui.NewLabel(PleaseRestartPrompt),
+		tui.NewSpacer(),
+	))
 }
 
 func newTerminalUI(user User, client chatum.Chatum_CommunicateClient) *terminalUI {
