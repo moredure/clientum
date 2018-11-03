@@ -3,9 +3,9 @@ package client
 import (
 	"context"
 	"github.com/mikefaraponov/chatum"
+	"github.com/mikefaraponov/clientum/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
-	"github.com/mikefaraponov/clientum/common"
 )
 
 func NewGRPCDial(url common.ServerAddress, d grpc.DialOption) (*grpc.ClientConn, error) {

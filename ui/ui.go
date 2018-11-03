@@ -4,26 +4,27 @@ import (
 	"fmt"
 	"github.com/marcusolsson/tui-go"
 	"github.com/mikefaraponov/chatum"
-	"time"
 	"github.com/mikefaraponov/clientum/common"
+	"time"
 )
 
 type terminalUI struct {
 	common.User
 	chatum.Chatum_CommunicateClient
 	tui.UI
-	history    *tui.Box
-	historyBox *tui.Box
-	inputBox   *tui.Box
-	chat       *tui.Box
-	input      *tui.Entry
+	historyScroll *tui.ScrollArea
+	history       *tui.Box
+	historyBox    *tui.Box
+	inputBox      *tui.Box
+	chat          *tui.Box
+	input         *tui.Entry
 }
 
 func (ui *terminalUI) addHistory() *terminalUI {
 	ui.history = tui.NewVBox()
-	historyScroll := tui.NewScrollArea(ui.history)
-	historyScroll.SetAutoscrollToBottom(true)
-	ui.historyBox = tui.NewVBox(historyScroll)
+	ui.historyScroll = tui.NewScrollArea(ui.history)
+	ui.historyScroll.SetAutoscrollToBottom(true)
+	ui.historyBox = tui.NewVBox(ui.historyScroll)
 	ui.historyBox.SetBorder(true)
 	return ui
 }

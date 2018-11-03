@@ -7,7 +7,7 @@ import (
 
 type (
 	ServerAddress string
-	User string
+	User          string
 )
 
 func NewServerAddress() fx.Option {

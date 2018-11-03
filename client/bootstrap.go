@@ -3,10 +3,10 @@ package client
 import (
 	"context"
 	"github.com/marcusolsson/tui-go"
+	"github.com/mikefaraponov/clientum/common"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"syscall"
-	"github.com/mikefaraponov/clientum/common"
 )
 
 func Bootstrap(lc fx.Lifecycle, conn *grpc.ClientConn, ui tui.UI) {
