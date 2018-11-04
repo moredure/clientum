@@ -9,10 +9,12 @@ import (
 	"syscall"
 )
 
+func Harakiri() {
+	syscall.Kill(syscall.Getpid(), syscall.SIGINT)
+}
+
 func Bootstrap(lc fx.Lifecycle, conn *grpc.ClientConn, ui tui.UI) {
-	ui.SetKeybinding(common.Esc, func() {
-		syscall.Kill(syscall.Getpid(), syscall.SIGINT)
-	})
+	ui.SetKeybinding(common.Esc, Harakiri)
 
 	lc.Append(fx.Hook{
 		OnStart: func(context.Context) error {
