@@ -15,10 +15,13 @@ func Harakiri() {
 
 func Bootstrap(lc fx.Lifecycle, conn *grpc.ClientConn, ui tui.UI) {
 	ui.SetKeybinding(common.Esc, Harakiri)
-
 	lc.Append(fx.Hook{
 		OnStart: func(context.Context) error {
-			go ui.Run()
+			go func() {
+				if err := ui.Run(); err != nil {
+					panic(err)
+				}
+			}()
 			return nil
 		},
 		OnStop: func(context.Context) error {

@@ -11,13 +11,13 @@ import (
 
 func main() {
 	fx.New(
-		common.NewServerAddress(),
-		common.NewUser(),
 		fx.Provide(chatum.NewChatumClient),
+		fx.Provide(common.NewEnvironment),
 		fx.Provide(grpc.WithInsecure),
 		fx.Provide(client.NewGRPCDial),
 		fx.Provide(client.NewChatumCommunicateClient),
 		fx.Provide(ui.NewUI),
+		fx.Provide(client.NewContext),
 		fx.Invoke(client.Bootstrap),
 	).Run()
 }

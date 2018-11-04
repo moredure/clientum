@@ -8,13 +8,17 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-func NewGRPCDial(url common.ServerAddress, d grpc.DialOption) (*grpc.ClientConn, error) {
-	return grpc.Dial(string(url), d)
+func NewGRPCDial(env *common.Environment, d grpc.DialOption) (*grpc.ClientConn, error) {
+	return grpc.Dial(env.ServerAddress, d)
 }
 
-func NewChatumCommunicateClient(client chatum.ChatumClient, user common.User) (chatum.Chatum_CommunicateClient, error) {
-	return client.Communicate(metadata.NewOutgoingContext(
+func NewContext(env *common.Environment) context.Context {
+	return metadata.NewOutgoingContext(
 		context.Background(),
-		metadata.Pairs(common.UsernameField, string(user)),
-	))
+		metadata.Pairs(common.UsernameField, env.User),
+	)
+}
+
+func NewChatumCommunicateClient(client chatum.ChatumClient, ctx context.Context) (chatum.Chatum_CommunicateClient, error) {
+	return client.Communicate(ctx)
 }

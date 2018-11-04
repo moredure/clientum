@@ -9,9 +9,9 @@ import (
 )
 
 type terminalUI struct {
-	common.User
 	chatum.Chatum_CommunicateClient
 	tui.UI
+	user          string
 	historyScroll *tui.ScrollArea
 	history       *tui.Box
 	historyBox    *tui.Box
@@ -55,7 +55,7 @@ func (ui *terminalUI) onSubmit(e *tui.Entry) {
 }
 
 func (ui *terminalUI) getUserLabel() *tui.Label {
-	return tui.NewLabel(fmt.Sprintf(common.UserLabelTemplate, string(ui.User)))
+	return tui.NewLabel(fmt.Sprintf(common.UserLabelTemplate, ui.user))
 }
 
 func (ui *terminalUI) buildUI() (terminal tui.UI, err error) {
@@ -110,15 +110,15 @@ func (ui *terminalUI) appendNetworkError() {
 	))
 }
 
-func newTerminalUI(user common.User, client chatum.Chatum_CommunicateClient) *terminalUI {
+func newTerminalUI(user string, client chatum.Chatum_CommunicateClient) *terminalUI {
 	return &terminalUI{
-		User:                     user,
+		user:                     user,
 		Chatum_CommunicateClient: client,
 	}
 }
 
-func NewUI(user common.User, client chatum.Chatum_CommunicateClient) (tui.UI, error) {
-	return newTerminalUI(user, client).
+func NewUI(env *common.Environment, client chatum.Chatum_CommunicateClient) (tui.UI, error) {
+	return newTerminalUI(env.User, client).
 		addHistory().
 		addInput().
 		addChat().

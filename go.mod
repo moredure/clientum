@@ -1,6 +1,7 @@
 module github.com/mikefaraponov/clientum
 
 require (
+	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/gdamore/encoding v0.0.0-20151215212835-b23993cbb635 // indirect
 	github.com/gdamore/tcell v1.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v0.0.0-20181028223441-12d3b2882a08 // indirect

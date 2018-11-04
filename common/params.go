@@ -1,31 +1,18 @@
 package common
 
 import (
-	"go.uber.org/fx"
-	"os"
+	"github.com/caarlos0/env"
 )
 
-type (
-	ServerAddress string
-	User          string
-)
-
-func NewServerAddress() fx.Option {
-	url, ok := os.LookupEnv("SERVER_URL")
-	if !ok {
-		return fx.Error(ServerAddressErr)
-	}
-	return fx.Provide(func() ServerAddress {
-		return ServerAddress(url)
-	})
+type Environment struct {
+	ServerAddress string `env:"SERVER_URL,required"`
+	User          string `env:"USER,required"`
 }
 
-func NewUser() fx.Option {
-	user, ok := os.LookupEnv("USER")
-	if !ok {
-		return fx.Error(UserMissingErr)
+func NewEnvironment() (*Environment, error) {
+	cfg := new(Environment)
+	if err := env.Parse(cfg); err != nil {
+		return nil, err
 	}
-	return fx.Provide(func() User {
-		return User(user)
-	})
+	return cfg, nil
 }
